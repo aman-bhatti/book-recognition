@@ -1,4 +1,3 @@
 # book-recognition
 
-1232
-testing testingn
+book recognition app
