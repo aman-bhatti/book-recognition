@@ -23,6 +23,9 @@ train_generator = datagen.flow_from_directory(
     class_mode='categorical'
 )
 
+# Automatically get the number of classes from the dataset
+num_classes = train_generator.num_classes
+
 # Load the MobileNetV2 model without the top layer
 base_model = MobileNetV2(weights='imagenet', include_top=False, input_shape=(224, 224, 3))
 
@@ -31,7 +34,7 @@ x = base_model.output
 x = GlobalAveragePooling2D()(x)
 
 # Add a fully-connected layer for your book titles
-predictions = Dense(4, activation='softmax')(x)  # 2 book titles: Stoner and Crime and Punishment
+predictions = Dense(num_classes, activation='softmax')(x)  # Dynamically adjust the output layer
 
 # Define the full model
 model = Model(inputs=base_model.input, outputs=predictions)
@@ -46,5 +49,5 @@ model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accur
 # Train the model
 model.fit(train_generator, epochs=10)
 
-# Save the trained model in the new Keras format
+# Save the trained model
 model.save('model/book_cover_model.keras')
